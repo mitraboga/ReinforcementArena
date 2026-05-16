@@ -1,206 +1,436 @@
-# Reinforcement Arena
+<div align="center">
 
-### Self-learning AI agents for inventory, cash flow, and business operations optimization
+# 🧠 Reinforcement Arena
 
-Reinforcement Arena is a production-style reinforcement learning lab for sequential business decisions. It trains agents to optimize inventory, cash allocation, and pricing decisions while comparing learned policies against practical business baselines.
+### Self-Learning AI Agents for Inventory, Cash Flow, Pricing, and Business Operations Optimization
 
-This project extends the CS50AI Nim reinforcement learning idea into an operations and finance portfolio project.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12+-blue?logo=python">
+  <img src="https://img.shields.io/badge/Reinforcement_Learning-Q--Learning-orange">
+  <img src="https://img.shields.io/badge/RL-SARSA-red">
+  <img src="https://img.shields.io/badge/Deep_Learning-DQN-purple">
+  <img src="https://img.shields.io/badge/PyTorch-DQN-ee4c2c?logo=pytorch">
+  <img src="https://img.shields.io/badge/Streamlit-Dashboard-ff4b4b?logo=streamlit">
+  <img src="https://img.shields.io/badge/YAML-Experiment_Config-informational">
+  <img src="https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions">
+  <img src="https://img.shields.io/badge/AI-Business_Optimization-success">
+  <img src="https://img.shields.io/badge/Operations-Research-darkgreen">
+  <img src="https://img.shields.io/badge/Finance-Cashflow_Modeling-gold">
+</p>
 
-## CS50AI Concepts Applied
+<p align="center">
+  <img src="assets/ReinforcementArenaBanner.gif" width="100%">
+</p>
 
-This project is built directly on the reinforcement learning ideas from CS50AI's Nim project, then extends them into business optimization environments.
+</div>
 
-### State
+---
 
-In CS50AI Nim, the state is the current pile configuration, such as:
+# 🚀 Executive Summary
+
+Reinforcement Arena is a production-style reinforcement learning platform for sequential business decision optimization.
+
+The system trains AI agents to make intelligent operational and financial decisions across simulated business environments including:
+
+- Inventory management
+- Cash-flow allocation
+- Dynamic pricing optimization
+
+The platform implements multiple reinforcement learning algorithms including:
+
+- Q-Learning
+- SARSA
+- Deep Q-Networks (DQN)
+
+while benchmarking learned policies against realistic business-rule baselines.
+
+Originally inspired by the reinforcement learning concepts introduced in Harvard's CS50AI Nim project, Reinforcement Arena evolves those ideas into a scalable business intelligence and AI experimentation platform designed for operations research, financial optimization, and decision intelligence workflows.
+
+---
+
+# 🧠 Core Idea
+
+Traditional machine learning predicts outcomes.
+
+Reinforcement learning optimizes decisions over time.
+
+That distinction is everything.
+
+Businesses constantly make sequential decisions:
+
+- How much inventory should we reorder?
+- Should we preserve liquidity or invest aggressively?
+- How should prices change under fluctuating demand?
+- How do we balance profit, risk, and operational efficiency?
+
+Every decision changes the future state of the business.
+
+Reinforcement Arena models these problems as reinforcement learning environments where agents continuously learn from rewards, penalties, and long-term outcomes.
+
+---
+
+# 🏗️ Platform Architecture
+
+<p align="center">
+  <img src="assets/ReinforcementArenaArchitecture.png" width="100%">
+</p>
+
+The platform consists of:
+
+| Layer | Purpose |
+|---|---|
+| Business Environments | Simulated operational and financial systems |
+| RL Agents | Learn optimal sequential decision policies |
+| Baseline Policies | Human-rule benchmarking strategies |
+| Training Engine | Episode execution and policy learning |
+| Evaluation Engine | KPI analysis and policy comparison |
+| Analytics Layer | Metrics, plots, reward curves, visualizations |
+| Streamlit Dashboard | Interactive experimentation interface |
+
+---
+
+# 🎯 Business Environments
+
+## 📦 Inventory Environment (`InventoryEnv`)
+
+Simulates operational inventory management under uncertainty.
+
+### Features
+- Stochastic customer demand
+- Forecast noise
+- Supplier lead times
+- Pending supplier orders
+- Inventory capacity constraints
+- Holding costs
+- Stockout penalties
+- Emergency procurement
+- Cash constraints
+- Seasonality simulation
+
+### Example State
 
 ```python
-[1, 3, 5, 7]
+(
+    inventory_bucket,
+    cash_bucket,
+    demand_forecast_bucket,
+    pipeline_bucket
+)
 ```
 
-In Reinforcement Arena, each environment defines a business state:
+### Example Actions
 
 ```python
-# Inventory
-(inventory_bucket, cash_bucket, demand_forecast_bucket, pipeline_bucket)
-
-# Cash Flow
-(cash_bucket, debt_bucket, emergency_fund_bucket, month)
-
-# Pricing
-(inventory_bucket, demand_bucket, price_bucket, day)
+0, 10, 20, 30, 40, 50, 60
 ```
 
-The idea is the same: the agent observes the current situation before choosing an action.
-
-### Actions
-
-In Nim, an action means choosing a pile and removing objects:
+### Reward Function
 
 ```python
-(pile_index, objects_to_remove)
+reward = (
+    revenue
+    - procurement_cost
+    - holding_cost
+    - stockout_penalty
+    - emergency_procurement_cost
+)
 ```
 
-In this project, actions are business decisions:
+---
+
+## 💰 Cash Flow Environment (`CashFlowEnv`)
+
+Optimizes capital allocation and liquidity management.
+
+### Agent Decisions
+- Repay debt
+- Hold cash
+- Invest in marketing
+- Increase emergency reserves
+
+### Features
+- Debt interest
+- Liquidity risk
+- Emergency savings
+- Revenue generation
+- Marketing ROI
+- Net worth tracking
+
+### Example State
 
 ```python
-# Inventory
-reorder_quantity = 0, 10, 20, 30, 40, 50, 60
-
-# Cash Flow
-action = "pay_debt", "invest_marketing", "save_cash", "hold_cash"
-
-# Pricing
-price = 18, 22, 25, 28, 32, 36
+(
+    cash_bucket,
+    debt_bucket,
+    emergency_fund_bucket,
+    month
+)
 ```
 
-### Rewards
-
-In Nim, the reward is simple: winning is good and losing is bad.
-
-In Reinforcement Arena, rewards are business outcomes:
+### Reward Function
 
 ```python
-# Inventory
-reward = revenue - procurement_cost - holding_cost - stockout_penalty - emergency_procurement_cost
-
-# Cash Flow
 reward = net_worth_growth - liquidity_penalty
-
-# Pricing
-reward = revenue - variable_cost - holding_cost - stockout_penalty
 ```
 
-This is reward shaping: designing the reward signal so the AI learns behavior aligned with the real objective.
+---
 
-### Q-Learning
+## 📈 Pricing Environment (`PricingEnv`)
 
-The core CS50AI algorithm used here is Q-learning. The agent learns a value for each `(state, action)` pair:
+Optimizes pricing strategy under dynamic market demand.
+
+### Features
+- Demand elasticity
+- Revenue optimization
+- Margin balancing
+- Finite inventory
+- Demand uncertainty
+- Dynamic market response
+
+### Example Actions
 
 ```python
-Q(state, action)
+18, 22, 25, 28, 32, 36
 ```
 
-The update rule follows the same idea from CS50AI:
+### Reward Function
+
+```python
+reward = (
+    revenue
+    - variable_cost
+    - holding_cost
+    - stockout_penalty
+)
+```
+
+---
+
+# 🤖 Reinforcement Learning Agents
+
+## 🔹 Q-Learning Agent
+
+Implements tabular off-policy temporal difference learning.
+
+### Core Update Rule
 
 ```python
 Q(s, a) <- Q(s, a) + alpha * (new_estimate - old_estimate)
 ```
 
-where:
+### Features
+- Epsilon-greedy exploration
+- Persistent checkpoints
+- Reward shaping
+- State discretization
+- Configurable hyperparameters
 
-- `alpha` controls how quickly the agent learns
-- `reward` reflects the immediate business result
-- `future_reward` estimates long-term value
-- `epsilon` controls exploration
+---
 
-### Exploration vs. Exploitation
+## 🔹 SARSA Agent
 
-The project uses epsilon-greedy action selection:
+Implements on-policy reinforcement learning.
 
-- Sometimes the agent explores a random action
-- Otherwise it exploits the best known action
+Unlike Q-Learning, SARSA updates using the action the current policy actually chooses next.
 
-This mirrors the CS50AI Nim approach, where the AI must try different moves before it can learn which ones are best.
+This creates a more conservative learning strategy and allows direct comparison between:
 
-### SARSA
+| Algorithm | Learning Style |
+|---|---|
+| Q-Learning | Off-policy |
+| SARSA | On-policy |
 
-SARSA is added as an on-policy reinforcement learning comparison. While Q-learning updates toward the best possible next action, SARSA updates using the next action the current policy actually takes.
+---
 
-This shows the difference between:
+## 🔹 Deep Q-Network (DQN)
 
-- Off-policy learning: Q-learning
-- On-policy learning: SARSA
+Extends tabular Q-learning using neural networks.
 
-### Deep Q-Network
-
-The project also includes a PyTorch DQN agent. DQN extends Q-learning by replacing the table of Q-values with a neural network.
-
-The DQN implementation includes:
-
+### DQN Features
+- PyTorch implementation
 - Experience replay
-- Mini-batch training
-- Target network updates
+- Replay memory
+- Mini-batch updates
 - Huber loss
+- Target networks
+- Checkpoint saving
+- GPU-compatible training
 
-This demonstrates how the CS50AI tabular Q-learning idea can scale toward larger state spaces.
+This demonstrates how classic CS50AI Q-learning scales toward modern deep reinforcement learning systems.
 
-### Training Episodes
+---
 
-Like the CS50AI Nim AI that learns by playing many games against itself, Reinforcement Arena trains agents over many simulated episodes.
+# 📊 Policy Benchmarking
 
-Each episode represents a full business scenario:
+A major project focus is evaluating AI against realistic operational strategies.
 
-- Inventory over many days
-- Cash allocation over many months
-- Pricing decisions until the sales horizon ends
+## Included Baselines
 
-### Policy Evaluation
-
-After training, learned policies are compared against baselines:
-
+### Inventory
 - Random policy
 - Fixed-order policy
-- Greedy reorder policy
-- Business-rule policies
+- Greedy reorder-point policy
 
-This makes the project more industry-oriented: the AI is not just trained, it is benchmarked against realistic decision rules.
+### Cash Flow
+- Business-rule allocation policy
 
-## Final Project Scope
+### Pricing
+- Static pricing baseline
+- Margin-protection baseline
 
-Reinforcement Arena is a complete reinforcement learning platform for business decision optimization. It combines custom simulation environments, trainable RL agents, baseline policies, evaluation workflows, and an interactive Streamlit decision-support dashboard.
+This transforms the project from:
+> “AI training”
 
-### Business Environments
+into:
 
-- `InventoryEnv`: Optimizes reorder decisions under stochastic demand, seasonality, forecast noise, supplier lead time, pending orders, inventory capacity, cash constraints, holding costs, stockout penalties, and emergency procurement costs.
-- `CashFlowEnv`: Optimizes monthly cash allocation across debt repayment, marketing investment, emergency savings, and liquidity preservation while tracking net worth, debt, cash, and risk penalties.
-- `PricingEnv`: Optimizes dynamic pricing decisions under price elasticity, finite inventory, demand uncertainty, revenue, margin, holding costs, and stockout penalties.
+> “AI-driven business strategy optimization.”
 
-### Reinforcement Learning Agents
+---
 
-- Q-learning agent with tabular `(state, action)` value learning and epsilon-greedy exploration.
-- SARSA agent for on-policy temporal-difference learning comparison.
-- PyTorch Deep Q-Network agent with replay memory, mini-batch training, Huber loss, checkpointing, and target-network updates.
-- Persistent trained checkpoints for tabular agents.
+# 📈 Training And Evaluation
 
-### Baseline Policies
+## Training Features
 
-- Random action policy for naive comparison.
-- Fixed-order inventory policy.
-- Greedy reorder-point inventory policy.
-- Cash-flow business-rule policy.
-- Pricing business-rule policy.
+- Reproducible YAML configs
+- Episode-based simulation
+- Reward tracking
+- Checkpoint persistence
+- Algorithm comparison workflows
 
-### Training And Evaluation
+## Evaluation Metrics
 
-- Reproducible YAML configs for inventory, cash flow, pricing, SARSA, and DQN experiments.
-- Training scripts for tabular agents and DQN.
-- Evaluation scripts for inventory, business environments, and DQN inventory policies.
-- Experiment runner for comparing Q-learning and SARSA.
-- Business metrics including reward, final cash, service level, stockout rate, units sold, emergency cost, holding cost, net worth, debt, revenue, average price, and ending inventory.
-- Matplotlib-generated training and policy comparison artifacts.
+### Inventory KPIs
+- Service level
+- Stockout rate
+- Holding cost
+- Emergency procurement cost
+- Final cash
+- Units sold
 
-### Streamlit Application
+### Cash Flow KPIs
+- Net worth
+- Liquidity ratio
+- Debt reduction
+- Capital efficiency
 
-- Production-style dark slate Streamlit dashboard with green and mint accents.
-- Single-page scrollable report layout with sidebar navigation.
-- Portfolio overview comparing best policies across environments.
-- Environment sections for inventory, cash flow, and pricing analytics.
-- Live Scenario Simulator where users can change assumptions, select an environment, choose a policy, run a scenario, and inspect KPIs, outcome traces, and action logs without retraining.
-- Model Ops section showing artifact status and reproducible commands.
-- Cloud-safe fallback demo data when generated artifacts are unavailable.
-- Custom transparent PNG visual asset in `assets/`.
+### Pricing KPIs
+- Revenue
+- Margin
+- Average selling price
+- Ending inventory
 
-### Engineering And Deployment
+---
 
-- Unit tests for environment behavior, Q-learning, SARSA, and DQN availability.
-- GitHub Actions CI workflow for compile and test checks.
-- Lightweight `requirements.txt` for Streamlit deployment.
-- Optional `requirements-ml.txt` for PyTorch/DQN training.
-- Streamlit deployment documentation.
-- Project brief and resume-ready positioning.
+# 🧪 Experiment Framework
 
-## Project Structure
+The project supports reproducible RL experimentation workflows.
+
+## Example Commands
+
+### Train Inventory Agent
+
+```bash
+python -m training.train_inventory
+```
+
+### Evaluate Inventory Policies
+
+```bash
+python -m training.evaluate_inventory
+```
+
+### Compare Q-Learning vs SARSA
+
+```bash
+python -m training.run_experiments
+```
+
+### Train Cash Flow Environment
+
+```bash
+python -m training.train_tabular --config configs/cashflow_config.yaml
+```
+
+### Train Pricing Environment
+
+```bash
+python -m training.train_tabular --config configs/pricing_config.yaml
+```
+
+---
+
+# 🖥️ Streamlit Dashboard
+
+<p align="center">
+  <img src="assets/DashboardPreview.png" width="100%">
+</p>
+
+The platform includes a production-style Streamlit analytics dashboard.
+
+## Dashboard Features
+
+### 📊 Portfolio Overview
+- Cross-environment KPI comparison
+- Best-performing policy summaries
+
+### 📦 Inventory Analytics
+- Reward curves
+- Inventory traces
+- Stockout visualization
+
+### 💰 Cash Flow Analytics
+- Net worth tracking
+- Debt reduction visualization
+- Liquidity metrics
+
+### 📈 Pricing Analytics
+- Revenue curves
+- Price optimization insights
+
+### 🎮 Scenario Simulator
+Users can:
+- Select environments
+- Choose policies
+- Modify assumptions
+- Run simulations live
+- Analyze outcomes without retraining
+
+### ⚙️ Model Ops
+- Artifact inspection
+- Experiment reproducibility
+- Training command generation
+
+---
+
+# ☁️ Engineering & Deployment
+
+## Software Engineering Features
+
+- Modular environment architecture
+- CI-tested workflows
+- Lightweight deployment requirements
+- Optional ML dependency profiles
+- Cloud-safe artifact fallbacks
+- YAML experiment management
+- Reproducible evaluation pipelines
+
+## Testing
+
+```bash
+python -m unittest discover
+python -m compileall agents environments training analytics app tests
+```
+
+## GitHub Actions CI
+
+The project includes:
+- automated compile checks
+- unit testing
+- workflow validation
+
+---
+
+# 📂 Project Structure
 
 ```text
 agents/          RL and baseline policy implementations
@@ -211,142 +441,130 @@ docs/            Project brief and portfolio documentation
 environments/    Business simulation environments
 training/        Training and evaluation entry points
 artifacts/       Generated model, CSV, and plot outputs
+tests/           Unit tests
+assets/          Dashboard and README visuals
 ```
 
-## Setup
+---
+
+# ⚡ Setup
 
 Use Python 3.12.
 
+## Create Environment
+
 ```bash
 python -m venv .venv
+```
+
+## Activate Environment
+
+### Windows
+
+```bash
 .venv\Scripts\activate
+```
+
+### Mac/Linux
+
+```bash
+source .venv/bin/activate
+```
+
+## Install Requirements
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-For DQN training, install the optional ML requirements:
+## Optional DQN Dependencies
 
 ```bash
 python -m pip install -r requirements-ml.txt
 ```
 
-## Train
+---
 
-```bash
-python -m training.train_inventory
-```
+# 🧠 CS50AI Concepts Applied
 
-This writes:
+This project directly extends the reinforcement learning concepts introduced in the CS50AI Nim project.
 
-- `artifacts/q_learning_inventory.pkl`
-- `artifacts/training_history.csv`
-- `artifacts/training_rewards.png`
+| CS50AI Nim | Reinforcement Arena |
+|---|---|
+| Pile State | Business Operational State |
+| Remove Objects | Business Decisions |
+| Win/Loss Reward | Financial Reward Shaping |
+| Q-Learning | Business Policy Optimization |
+| Self-Play Training | Simulated Operational Episodes |
 
-## Evaluate
+The project demonstrates how foundational RL concepts can scale into production-oriented business intelligence systems.
 
-```bash
-python -m training.evaluate_inventory
-```
+---
 
-This compares Q-learning against random and greedy policies and writes:
-
-- `artifacts/evaluation_summary.csv`
-- `artifacts/policy_comparison.png`
-
-## Compare Algorithms
-
-```bash
-python -m training.run_experiments
-```
-
-This trains and evaluates both configured learning algorithms:
-
-- Q-learning: `configs/inventory_config.yaml`
-- SARSA: `configs/inventory_sarsa_config.yaml`
-
-Combined outputs are written to `artifacts/experiments/`.
-
-## Train Cash Flow and Pricing
-
-```bash
-python -m training.train_tabular --config configs/cashflow_config.yaml
-python -m training.evaluate_business --config configs/cashflow_config.yaml
-
-python -m training.train_tabular --config configs/pricing_config.yaml
-python -m training.evaluate_business --config configs/pricing_config.yaml
-```
-
-## Train DQN
-
-Install the optional ML requirements, including PyTorch, first:
-
-```bash
-python -m pip install -r requirements-ml.txt
-```
-
-Then run:
-
-```bash
-python -m training.train_dqn_inventory
-python -m training.evaluate_dqn_inventory
-```
-
-## Dashboard
-
-```bash
-streamlit run app/streamlit_app.py
-```
-
-The dashboard includes a live **Scenario Simulator**. Users can choose an environment, select a policy, adjust business assumptions, run a simulation, and inspect KPIs, outcome traces, and action logs without retraining the agents.
-
-## Business Framing
-
-The inventory agent observes a discretized operational state:
+# 📌 Example Inventory Decision Flow
 
 ```python
-(inventory_bucket, cash_bucket, demand_forecast_bucket, pipeline_bucket)
+state = (
+    inventory_bucket,
+    cash_bucket,
+    demand_forecast_bucket,
+    pipeline_bucket
+)
+
+action = reorder_quantity
+
+reward = (
+    revenue
+    - procurement_cost
+    - holding_cost
+    - stockout_penalty
+)
 ```
 
-It chooses a reorder quantity:
+The AI continuously learns:
+- when to reorder
+- how much to reorder
+- how to balance inventory vs liquidity
+- how to maximize long-term operational reward
 
-```python
-0, 10, 20, 30, 40, 50
-```
+---
 
-The reward function reflects business value:
+# 🔥 Why This Project Matters
 
-```python
-reward = revenue - procurement_cost - holding_cost - stockout_penalty - emergency_procurement_cost
-```
+Reinforcement learning is one of the most powerful paradigms in AI because it optimizes decisions, not just predictions.
 
-In the finished environment, stockouts also trigger emergency procurement cost and supplier orders arrive after a configurable lead time. This makes the decision sequential: ordering too late creates stockouts, while ordering too early ties up cash and creates holding cost.
+This project demonstrates:
 
-## Algorithms
+- Sequential decision optimization
+- Operations research concepts
+- Financial modeling
+- Reinforcement learning systems
+- Experiment engineering
+- AI benchmarking
+- ML infrastructure workflows
+- Interactive business analytics
 
-### Q-learning
+It combines:
+- business strategy
+- operations optimization
+- reinforcement learning
+- software engineering
+- dashboard analytics
 
-Q-learning is an off-policy temporal-difference method. It updates each state-action value toward the best estimated future action, regardless of the action the current policy actually takes next.
+into one integrated AI platform.
 
-### SARSA
+---
 
-SARSA is an on-policy temporal-difference method. It updates each state-action value using the next action selected by the same epsilon-greedy policy. This is useful for comparing aggressive value maximization against a policy that internalizes its own exploration behavior.
+# 👤 Author
 
-### Deep Q-Network
+<p align="center">
+  <b>Mitra Boga</b><br><br>
 
-DQN replaces the tabular Q-table with a neural network. The implementation uses replay memory, mini-batch updates, Huber loss, and a target network to stabilize training on larger state spaces.
+  <a href="https://www.linkedin.com/in/bogamitra/">
+    <img src="https://img.shields.io/badge/LinkedIn-Mitra_Boga-0077B5?style=for-the-badge&logo=linkedin">
+  </a>
 
-## Resume Bullet
-
-Engineered **Reinforcement Arena**, a production-style reinforcement learning platform for business operations optimization, implementing Q-learning, SARSA, and PyTorch DQN agents across custom inventory, cash-flow, and pricing environments with reward shaping, policy evaluation, business baselines, CI-tested workflows, and Streamlit analytics dashboards.
-
-## Quality Checks
-
-```bash
-python -m unittest discover
-python -m compileall agents environments training analytics app tests
-```
-
-## Roadmap
-
-- Add multi-product inventory scenarios
-- Add cloud training profiles for larger DQN runs
-- Add experiment tracking with run metadata and model registry support
+  <a href="https://x.com/techtraboga">
+    <img src="https://img.shields.io/badge/X-@techtraboga-000000?style=for-the-badge&logo=x">
+  </a>
+</p>
