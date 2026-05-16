@@ -1,0 +1,44 @@
+environment_type: inventory
+
+environment:
+  initial_inventory: 40
+  initial_cash: 10000.0
+  max_inventory: 120
+  unit_cost: 12.0
+  selling_price: 25.0
+  holding_cost: 0.5
+  stockout_penalty: 8.0
+  mean_demand: 22.0
+  demand_std: 6.0
+  seasonal_amplitude: 0.3
+  seasonal_period: 30
+  forecast_noise_std: 3.0
+  supplier_lead_time: 2
+  emergency_unit_cost: 32.0
+  max_pending_orders: 140
+  episode_length: 60
+  reorder_quantities: [0, 10, 20, 30, 40, 50, 60]
+  inventory_bucket_size: 10
+  cash_bucket_size: 1000
+  demand_bucket_size: 5
+  pipeline_bucket_size: 10
+  seed: 7
+
+agent:
+  algorithm: dqn
+  hidden_size: 128
+  gamma: 0.95
+  epsilon: 1.0
+  epsilon_decay: 0.995
+  min_epsilon: 0.05
+  learning_rate: 0.001
+  replay_size: 10000
+  batch_size: 64
+  target_update_frequency: 100
+  seed: 41
+
+training:
+  episodes: 500
+  evaluation_episodes: 100
+  checkpoint_path: artifacts/dqn_inventory.pt
+

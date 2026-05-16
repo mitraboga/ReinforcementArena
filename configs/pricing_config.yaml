@@ -1,0 +1,33 @@
+environment_type: pricing
+
+environment:
+  initial_inventory: 160
+  unit_cost: 10.0
+  base_price: 25.0
+  reference_price: 25.0
+  base_demand: 26.0
+  demand_std: 4.0
+  price_elasticity: 1.4
+  holding_cost: 0.35
+  stockout_penalty: 6.0
+  episode_length: 45
+  price_actions: [18, 22, 25, 28, 32, 36]
+  inventory_bucket_size: 10
+  demand_bucket_size: 5
+  price_bucket_size: 5
+  seed: 31
+
+agent:
+  algorithm: q_learning
+  alpha: 0.12
+  gamma: 0.93
+  epsilon: 0.25
+  epsilon_decay: 0.998
+  min_epsilon: 0.04
+  seed: 32
+
+training:
+  episodes: 3000
+  evaluation_episodes: 200
+  checkpoint_path: artifacts/q_learning_pricing.pkl
+
