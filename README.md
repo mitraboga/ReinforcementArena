@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧠 Reinforcement Arena
+# 🦾 Reinforcement Arena 🔁
 
 ### Self-Learning AI Agents for Inventory, Cash Flow, Pricing, and Business Operations Optimization
 
