@@ -146,19 +146,59 @@ After training, learned policies are compared against baselines:
 
 This makes the project more industry-oriented: the AI is not just trained, it is benchmarked against realistic decision rules.
 
-## Finished Scope
+## Final Project Scope
 
-- Custom `InventoryEnv` with stochastic demand, seasonality, forecast noise, supplier lead time, pending orders, cash, inventory capacity, and business reward modeling
-- Custom `CashFlowEnv` for monthly allocation across debt repayment, marketing, savings, and liquidity
-- Custom `PricingEnv` for dynamic price optimization under demand elasticity and finite inventory
-- Tabular Q-learning and SARSA agents with epsilon-greedy exploration and persistent checkpoints
-- PyTorch Deep Q-Network agent with replay memory and target-network updates
-- Baseline policies: random reorder, fixed order quantity, and greedy reorder-point strategy
-- Training and evaluation workflows
-- Business metrics: reward, final cash, stockout rate, service level, units sold, emergency procurement cost, holding cost, and ending inventory
-- Matplotlib artifacts and Streamlit dashboard
-- Interactive Streamlit scenario simulator for changing assumptions, selecting policies, and running live business simulations
-- Unit tests for environment mechanics and learning updates
+Reinforcement Arena is a complete reinforcement learning platform for business decision optimization. It combines custom simulation environments, trainable RL agents, baseline policies, evaluation workflows, and an interactive Streamlit decision-support dashboard.
+
+### Business Environments
+
+- `InventoryEnv`: Optimizes reorder decisions under stochastic demand, seasonality, forecast noise, supplier lead time, pending orders, inventory capacity, cash constraints, holding costs, stockout penalties, and emergency procurement costs.
+- `CashFlowEnv`: Optimizes monthly cash allocation across debt repayment, marketing investment, emergency savings, and liquidity preservation while tracking net worth, debt, cash, and risk penalties.
+- `PricingEnv`: Optimizes dynamic pricing decisions under price elasticity, finite inventory, demand uncertainty, revenue, margin, holding costs, and stockout penalties.
+
+### Reinforcement Learning Agents
+
+- Q-learning agent with tabular `(state, action)` value learning and epsilon-greedy exploration.
+- SARSA agent for on-policy temporal-difference learning comparison.
+- PyTorch Deep Q-Network agent with replay memory, mini-batch training, Huber loss, checkpointing, and target-network updates.
+- Persistent trained checkpoints for tabular agents.
+
+### Baseline Policies
+
+- Random action policy for naive comparison.
+- Fixed-order inventory policy.
+- Greedy reorder-point inventory policy.
+- Cash-flow business-rule policy.
+- Pricing business-rule policy.
+
+### Training And Evaluation
+
+- Reproducible YAML configs for inventory, cash flow, pricing, SARSA, and DQN experiments.
+- Training scripts for tabular agents and DQN.
+- Evaluation scripts for inventory, business environments, and DQN inventory policies.
+- Experiment runner for comparing Q-learning and SARSA.
+- Business metrics including reward, final cash, service level, stockout rate, units sold, emergency cost, holding cost, net worth, debt, revenue, average price, and ending inventory.
+- Matplotlib-generated training and policy comparison artifacts.
+
+### Streamlit Application
+
+- Production-style dark slate Streamlit dashboard with green and mint accents.
+- Single-page scrollable report layout with sidebar navigation.
+- Portfolio overview comparing best policies across environments.
+- Environment sections for inventory, cash flow, and pricing analytics.
+- Live Scenario Simulator where users can change assumptions, select an environment, choose a policy, run a scenario, and inspect KPIs, outcome traces, and action logs without retraining.
+- Model Ops section showing artifact status and reproducible commands.
+- Cloud-safe fallback demo data when generated artifacts are unavailable.
+- Custom transparent PNG visual asset in `assets/`.
+
+### Engineering And Deployment
+
+- Unit tests for environment behavior, Q-learning, SARSA, and DQN availability.
+- GitHub Actions CI workflow for compile and test checks.
+- Lightweight `requirements.txt` for Streamlit deployment.
+- Optional `requirements-ml.txt` for PyTorch/DQN training.
+- Streamlit deployment documentation.
+- Project brief and resume-ready positioning.
 
 ## Project Structure
 
@@ -307,6 +347,6 @@ python -m compileall agents environments training analytics app tests
 
 ## Roadmap
 
-- Add experiment tracking and scenario configuration
 - Add multi-product inventory scenarios
 - Add cloud training profiles for larger DQN runs
+- Add experiment tracking with run metadata and model registry support
