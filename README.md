@@ -2,7 +2,7 @@
 
 # 🦾 Reinforcement Arena 🔁
 
-### Self-Learning AI Agents for Inventory, Cash Flow, Pricing, and Business Operations Optimization
+### Self-Learning AI Agents for Inventory, Cash Flow, Pricing, and Business Ops Optimization
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.12+-blue?logo=python">
